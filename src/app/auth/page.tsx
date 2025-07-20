@@ -9,12 +9,16 @@ import { useEffect } from 'react';
 
 export default function AuthPage() {
   const [isSignUp, setIsSignUp] = useState(true);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/dashboard');
+      setSuccessMessage('Authentication successful! Redirecting to dashboard...');
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1500);
     }
   }, [user, loading, router]);
 
@@ -30,7 +34,14 @@ export default function AuthPage() {
   }
 
   if (user) {
-    return null; // Will redirect to dashboard
+    return (
+      <div className="min-h-screen bg-primary-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-4">✅</div>
+          <p className="text-lg text-gray-600">{successMessage}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
