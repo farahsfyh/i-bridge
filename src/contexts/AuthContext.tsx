@@ -45,37 +45,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, userType: 'employer' | 'service_provider') => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          user_type: userType,
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            user_type: userType,
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Auth signup error:', error);
+        return { error };
+      }
+
+      if (data.user) {
+        // The profile will be created automatically by the database trigger
+        // But we can also try to create it manually as a fallback
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              email: data.user.email!,
+              user_type: userType,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }
+          ])
+          .select();
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+          // Don't return error here as the trigger might have already created the profile
+          // Just log it for debugging
         }
       }
-    });
 
-    if (!error && data.user) {
-      // Create profile record
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert([
-          {
-            id: data.user.id,
-            email: data.user.email!,
-            user_type: userType,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          }
-        ]);
-
-      if (profileError) {
-        console.error('Error creating profile:', profileError);
-        return { error: profileError };
-      }
+      return { error: null };
+    } catch (err) {
+      console.error('Unexpected error during signup:', err);
+      return { error: err instanceof Error ? err : new Error('An unexpected error occurred') };
     }
-
-    return { error };
   };
 
   const signIn = async (email: string, password: string) => {
