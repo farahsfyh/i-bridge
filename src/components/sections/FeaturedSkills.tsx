@@ -79,21 +79,22 @@ const FeaturedSkills = React.forwardRef<HTMLElement, FeaturedSkillsProps>(
           </div>
 
           {/* Skills Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16 items-stretch">
             {skillCategories.map((category, index) => (
-              <SkillCategory
-                key={category.title}
-                title={category.title}
-                description={category.description}
-                icon={category.icon}
-                color={category.color}
-                href={category.href}
-                className="animate-fade-in-up"
-                style={{
-                  animationDelay: `${index * 100}ms`,
-                  animationFillMode: 'both'
-                }}
-              />
+              <div key={category.title} className="h-full">
+                <SkillCategory
+                  title={category.title}
+                  description={category.description}
+                  icon={category.icon}
+                  color={category.color}
+                  href={category.href}
+                  className="animate-fade-in-up h-full"
+                  style={{
+                    animationDelay: `${index * 100}ms`,
+                    animationFillMode: 'both'
+                  }}
+                />
+              </div>
             ))}
           </div>
 

@@ -62,25 +62,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (data.user) {
-        // The profile will be created automatically by the database trigger
-        // But we can also try to create it manually as a fallback
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: data.user.id,
-              email: data.user.email!,
-              user_type: userType,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            }
-          ])
-          .select();
+        // Try to create profile, but don't fail if it doesn't work
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert([
+              {
+                id: data.user.id,
+                email: data.user.email!,
+                user_type: userType,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              }
+            ])
+            .select();
 
-        if (profileError) {
-          console.error('Error creating profile:', profileError);
-          // Don't return error here as the trigger might have already created the profile
-          // Just log it for debugging
+          if (profileError) {
+            console.warn('Profile creation failed (database schema may not be set up):', profileError);
+            // Continue with signup even if profile creation fails
+          }
+        } catch (profileErr) {
+          console.warn('Profile creation error (database schema may not be set up):', profileErr);
+          // Continue with signup even if profile creation fails
         }
       }
 

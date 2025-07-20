@@ -48,7 +48,7 @@ const SkillCategory = React.forwardRef<HTMLDivElement, SkillCategoryProps>(
         ref={ref}
         className={cn(
           "group cursor-pointer transition-all duration-300 transform hover:-translate-y-1",
-          "border-2 hover:shadow-lg",
+          "border-2 hover:shadow-lg h-full w-full",
           colors.bg,
           colors.border,
           colors.hover,
@@ -56,23 +56,25 @@ const SkillCategory = React.forwardRef<HTMLDivElement, SkillCategoryProps>(
         )}
         style={style}
       >
-        <CardContent className="p-6 text-center">
-          {/* Icon */}
-          <div className={cn(
-            "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4",
-            colors.bg,
-            "group-hover:scale-110 transition-transform duration-300"
-          )}>
-            <span className={cn("text-2xl", colors.icon)}>{icon}</span>
-          </div>
+        <CardContent className="p-6 text-center h-full flex flex-col justify-between">
+          <div>
+            {/* Icon */}
+            <div className={cn(
+              "w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4",
+              colors.bg,
+              "group-hover:scale-110 transition-transform duration-300"
+            )}>
+              <span className={cn("text-2xl", colors.icon)}>{icon}</span>
+            </div>
 
-          {/* Content */}
-          <Heading level={3} className="text-xl font-semibold text-primary-text mb-3 group-hover:text-accent-primary transition-colors">
-            {title}
-          </Heading>
-          <Text variant="muted" className="text-sm leading-relaxed">
-            {description}
-          </Text>
+            {/* Content */}
+            <Heading level={3} className="text-xl font-semibold text-primary-text mb-3 group-hover:text-accent-primary transition-colors">
+              {title}
+            </Heading>
+            <Text variant="muted" className="text-sm leading-relaxed">
+              {description}
+            </Text>
+          </div>
 
           {/* Hover Indicator */}
           <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
